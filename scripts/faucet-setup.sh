@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Update and install docker if not already installed
+# Update and install Docker if not already installed
 echo "Installing Docker and docker.io..."
 sudo apt update
 sudo apt install -y docker docker.io
@@ -39,6 +39,13 @@ fi
 echo "Creating /etc/faucet/ directory..."
 sudo mkdir -p /etc/faucet/
 
+# Check if the faucet container is already running
+if [ "$(sudo docker ps -q -f name=faucet)" ]; then
+    echo "Stopping and removing the existing faucet container..."
+    sudo docker stop faucet > /dev/null 2>&1
+    sudo docker rm faucet > /dev/null 2>&1
+fi
+
 # Pull and run the faucet container
 echo "Pulling the faucet Docker container..."
 sudo docker pull faucet/faucet:1.10.11
@@ -48,7 +55,6 @@ echo "Starting the faucet container..."
 sudo docker run -d --name faucet --restart=always \
     -v /etc/faucet/:/etc/faucet/ \
     -v /var/log/faucet/:/var/log/faucet/ \
-    -p 6653:6653 -p 9302:9302 faucet/faucet || \
-    echo "Faucet container might already be running."
+    -p 6653:6653 -p 9302:9302 faucet/faucet
 
 echo "Setup complete. Exiting."
