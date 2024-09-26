@@ -126,5 +126,23 @@ sudo iptables -t filter -A FORWARD -i ens3 -o host2router -j ACCEPT
 sudo iptables -t filter -A FORWARD -o ens3 -i host2router -j ACCEPT
 echo -e ${white} DONE \n
 
+# Backup the current /etc/hosts file
+sudo cp /etc/hosts /etc/hosts.backup
+
+# Define the new entries with a comment
+new_entries="# New entries
+10.64.2.2 bowser
+10.64.2.2 peach
+10.64.1.3 yoshi
+10.64.1.2 mario
+10.64.3.1 router"
+
+# Append the new entries to the /etc/hosts file
+echo "$new_entries" | sudo tee -a /etc/hosts > /dev/null
+
+# Verify the changes
+echo "The following new entries have been added to /etc/hosts:"
+echo "$new_entries"
+
 sudo ip netns exec mario ping -c 1 10.64.2.3
 sudo ip netns exec mario ping -c 1 8.8.8.8
