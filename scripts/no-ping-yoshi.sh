@@ -89,6 +89,7 @@ echo -e ${Yellow} ADD DEFAULT ROUTES
 sudo ip netns exec mario ip route add default via 10.64.1.1 dev mario onlink
 sudo ip netns exec bowser ip route add default via 10.64.2.1 dev bowser onlink
 sudo ip netns exec peach ip route add default via 10.64.2.1 dev peach onlink
+sudo ip netns exec yoshi ip route del default
 
 cat << EOF >  10-ip-forwarding.conf
 net.ipv4.ip_forward = 1
